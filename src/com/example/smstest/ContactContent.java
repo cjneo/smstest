@@ -25,7 +25,7 @@ public class ContactContent {
         this.uri = uri;
     }
     public List<ContactInfo> getAllContact(){
-        Cursor cursor=  getAllSmsCursor();
+        Cursor cursor=  getAllContactCursor();
         return getContactInfo(cursor);
       }
     @SuppressWarnings("deprecation")
@@ -57,7 +57,7 @@ public class ContactContent {
     }
     
     
-    public Cursor getAllSmsCursor(){
+    public Cursor getAllContactCursor(){
         /*
         String[] projection = new String[] { "_id", "thread_id", "address",
                 "person", "body", "date", "type" };
