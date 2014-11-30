@@ -24,6 +24,7 @@ public class AnalyseActivity extends Activity {
     private ProgressBar bar3;
     Map<String, String> dateSms = new HashMap<String, String>();
     Map<String, SmsNameNum> hashOfMonth = new HashMap<String, SmsNameNum>();
+    ContactContent contactContent;
 
     List<UGSmsInfo> uginfos;
 
@@ -39,7 +40,7 @@ public class AnalyseActivity extends Activity {
                 analyseText.setText(outputText);
                 break;
             case 3:
-                tryContactInfo();
+                // tryContactInfo();
                 break;
             }
             super.handleMessage(msg);
@@ -54,9 +55,15 @@ public class AnalyseActivity extends Activity {
         analyseText = (TextView) findViewById(R.id.analyseText);
         uri = Uri.parse(AllFinalInfo.SMS_URI_ALL);
         analyseText.setMovementMethod(ScrollingMovementMethod.getInstance());
+
         SmsContent sc = new SmsContent(this, uri);
         // infos = sc.getAllSms();
         infos = sc.getSmsByPerson();
+
+        uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        contactContent = new ContactContent(this, uri);
+        contactInfos = contactContent.getAllContact();
+
         outputText = "ok";
         outputText += "\n" + "你一共有/" + infos.size() + "条短信";
         analyseText.setText(outputText);
@@ -103,26 +110,50 @@ public class AnalyseActivity extends Activity {
             public void run() {
                 String ugUserNum = infos.get(0).getthread_id();
                 String ugUserPerson = infos.get(0).getperson();
+                String ugUserPhoneNum = null;
+                String ugUserName = null;
                 int sum = 0;
+                boolean isGetName = false;
+                int tryGetNameTime = 0;
                 outputText += "sizeof" + infos.size() + " \n";
                 for (int i = 0; i < infos.size(); i++) {
                     int position = i;
                     String tmpNum = infos.get(position).getthread_id();
-                    if (ugUserPerson == null) {
-                        ugUserPerson = infos.get(i).getperson();
-                    }
+                    
                     if (tmpNum.equals(ugUserNum)) {
                         sum++;
                     } else if (!(tmpNum.equals(ugUserNum))) {
                         UGSmsInfo ug = new UGSmsInfo();
                         // ug.setSum(sum);
                         // ug.setNameString(ugUserNum);
-                        outputText += ugUserNum + ":" + sum + " |"
-                                + ugUserPerson + " \n";
+                        if (sum > 3){
+                           
+                            outputText += tmpNum+":"+ugUserPhoneNum + ":" + sum + " |"
+                                    + ugUserName + " \n";
+                        }
                         // uginfos.add(ug);
                         sum = 1;
                         ugUserNum = tmpNum;
                         ugUserPerson = null;
+                        isGetName = false;
+                        tryGetNameTime = 0;
+                        ugUserName = null;
+                        ugUserPhoneNum = infos.get(position)
+                                .getPhoneNumber();
+                    }
+                    if (!isGetName) {
+                        if (infos.get(position).getType() == 2) {
+                            if (tryGetNameTime < 3) {
+                                ugUserPhoneNum = infos.get(position)
+                                        .getPhoneNumber();
+                                tryGetNameTime++;
+                                ugUserName = contactContent
+                                        .findNameByPhoneNum(ugUserPhoneNum);
+                                if (ugUserName != null) {
+                                    isGetName = true;
+                                }
+                            }
+                        }
                     }
                 }
                 outputText += "\n" + "发出的短信为" + "条";
@@ -136,70 +167,40 @@ public class AnalyseActivity extends Activity {
             }
         }.start();
     }
-
-    public void tryContactInfo() {
-        uri = ContactsContract.Contacts.CONTENT_URI;
-        uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        ContactContent contactContent = new ContactContent(this, uri);
-        contactInfos = contactContent.getAllContact();
-        getContact();
-        new Thread() {
-            public void run() {
-                for (int i = 0; i < contactInfos.size(); i++) {
-                    ContactInfo info = contactInfos.get(i);
-                    outputText += info.getContactId() + " "
-                            + info.getDesplayName();
-
-                }
-                Message message2 = new Message();
-                message2.what = 2;
-                uiHandler.sendMessage(message2);
-            }
-            
-        }.start();
-    }
-
-    public void getContact() {
-        // 获得所有的联系人
-        Cursor cur = getContentResolver().query(
-                ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-        // 循环遍历
-        if (cur.moveToFirst()) {
-            int idColumn = cur.getColumnIndex(ContactsContract.Contacts._ID);
-            int displayNameColumn = cur
-                    .getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
-            do {
-                // 获得联系人的ID号
-                String contactId = cur.getString(idColumn);
-                // 获得联系人姓名
-                String disPlayName = cur.getString(displayNameColumn);
-                outputText+=contactId+" "+disPlayName;
-                // 查看该联系人有多少个电话号码。如果没有这返回值为0
-                int phoneCount = cur
-                        .getInt(cur
-                                .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-                if (phoneCount > 0) {
-                    // 获得联系人的电话号码
-                    Cursor phones = getContentResolver().query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID
-                                    + " = " + contactId, null, null);
-                    if (phones.moveToFirst()) {
-                        do {
-                            // 遍历所有的电话号码
-                            String phoneNumber = phones
-                                    .getString(phones
-                                            .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                            System.out.println(phoneNumber);
-                        } while (phones.moveToNext());
-                    }
-                }
-            } while (cur.moveToNext());
-        }
-        Message message2 = new Message();
-        message2.what = 2;
-        uiHandler.sendMessage(message2);
-    }
-
+    /*
+     * public void tryContactInfo() { uri =
+     * ContactsContract.Contacts.CONTENT_URI; uri =
+     * ContactsContract.CommonDataKinds.Phone.CONTENT_URI; ContactContent
+     * contactContent = new ContactContent(this, uri); contactInfos =
+     * contactContent.getAllContact(); getContact(); new Thread() { public void
+     * run() { for (int i = 0; i < contactInfos.size(); i++) { ContactInfo info
+     * = contactInfos.get(i); outputText += info.getContactId() + " " +
+     * info.getDesplayName();
+     * 
+     * } Message message2 = new Message(); message2.what = 2;
+     * uiHandler.sendMessage(message2); }
+     * 
+     * }.start(); }
+     * 
+     * public void getContact() { // 获得所有的联系人 Cursor cur =
+     * getContentResolver().query( ContactsContract.Contacts.CONTENT_URI, null,
+     * null, null, null); // 循环遍历 if (cur.moveToFirst()) { int idColumn =
+     * cur.getColumnIndex(ContactsContract.Contacts._ID); int displayNameColumn
+     * = cur .getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME); do { //
+     * 获得联系人的ID号 String contactId = cur.getString(idColumn); // 获得联系人姓名 String
+     * disPlayName = cur.getString(displayNameColumn);
+     * outputText+=contactId+" "+disPlayName; // 查看该联系人有多少个电话号码。如果没有这返回值为0 int
+     * phoneCount = cur .getInt(cur
+     * .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)); if
+     * (phoneCount > 0) { // 获得联系人的电话号码 Cursor phones =
+     * getContentResolver().query(
+     * ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+     * ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId,
+     * null, null); if (phones.moveToFirst()) { do { // 遍历所有的电话号码 String
+     * phoneNumber = phones .getString(phones
+     * .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+     * System.out.println(phoneNumber); } while (phones.moveToNext()); } } }
+     * while (cur.moveToNext()); } Message message2 = new Message();
+     * message2.what = 2; uiHandler.sendMessage(message2); }
+     */
 }

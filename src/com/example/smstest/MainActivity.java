@@ -145,7 +145,7 @@ public class MainActivity extends Activity {
                 {
                     phoneNum=contactInfos.get(i).getPhoneNum();
                     name=contactInfos.get(i).getDesplayName();
-                    
+                    break;
                 }
             }
             String tmpinfo = "id:"+id+"name:" + name + "phonenum"+phoneNum+"person"

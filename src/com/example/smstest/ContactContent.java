@@ -77,6 +77,17 @@ public class ContactContent {
          cusor = cr.query(uri, projection, null,null,null);
         
         return cusor;
-        
     }
+    
+    public String findNameByPhoneNum(String phoneNumber){
+    for(int i=0;i<infos.size();i++){
+        if(infos.get(i).getPhoneNum().equals(phoneNumber))
+        {
+            String name=infos.get(i).getDesplayName();
+            return name;
+        }
+    }
+    return null;
+    }
+    
 }
