@@ -1,30 +1,24 @@
 package com.example.smstest;
 
-public class UGSmsInfo {
+public class UGSmsInfo implements Comparable<UGSmsInfo> {
 
 
         private String nameString;
         private String _id;
         private String thread_id;
-        /**
-         * 短信内容
-         */
+        
         private String smsbody;
-        /**
-         * 发送短信的电话号码
-         */
+        
         private String phoneNumber;
-        /**
-         * 发送短信的日期和时间
-         */
+
         private String person;
         
-        private int sum=0;
+        private int sumSms=0;
         public int getSum() {
-            return sum;
+            return sumSms;
         }
         public void setSum(int num) {
-            sum=num;
+            sumSms=num;
         }
         public String getNameString() {
             return nameString;
@@ -58,6 +52,12 @@ public class UGSmsInfo {
                 phoneNumber=phoneNumber.substring(3);
             }
             this.phoneNumber = phoneNumber;
+        }
+        @Override
+        public int compareTo(UGSmsInfo another) {
+            // TODO Auto-generated method stub
+            int result=-(getSum()-another.getSum());
+            return result;
         }
 
 

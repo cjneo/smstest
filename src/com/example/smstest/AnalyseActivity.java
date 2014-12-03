@@ -1,5 +1,7 @@
 package com.example.smstest;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +28,7 @@ public class AnalyseActivity extends Activity {
     Map<String, SmsNameNum> hashOfMonth = new HashMap<String, SmsNameNum>();
     ContactContent contactContent;
 
-    List<UGSmsInfo> uginfos;
+    List<UGSmsInfo> uginfos = new ArrayList<UGSmsInfo>();
 
     String outputText = null;
 
@@ -119,27 +121,30 @@ public class AnalyseActivity extends Activity {
                 for (int i = 0; i < infos.size(); i++) {
                     int position = i;
                     String tmpNum = infos.get(position).getthread_id();
-                    
+
                     if (tmpNum.equals(ugUserNum)) {
                         sum++;
                     } else if (!(tmpNum.equals(ugUserNum))) {
-                        UGSmsInfo ug = new UGSmsInfo();
-                        // ug.setSum(sum);
-                        // ug.setNameString(ugUserNum);
-                        if (sum > 3){
-                           
-                            outputText += tmpNum+":"+ugUserPhoneNum + ":" + sum + " |"
-                                    + ugUserName + " \n";
+
+                        if (sum > 3) {
+
+                            // outputText += tmpNum+":"+ugUserPhoneNum + ":" +
+                            // sum + " |"
+                            // + ugUserName + " \n";
+                            UGSmsInfo ug = new UGSmsInfo();
+                            ug.setSum(sum);
+                            ug.setNameString(ugUserName);
+                            ug.setthread_id(tmpNum);
+                            uginfos.add(ug);
                         }
-                        // uginfos.add(ug);
+
                         sum = 1;
                         ugUserNum = tmpNum;
                         ugUserPerson = null;
                         isGetName = false;
                         tryGetNameTime = 0;
                         ugUserName = null;
-                        ugUserPhoneNum = infos.get(position)
-                                .getPhoneNumber();
+                        ugUserPhoneNum = infos.get(position).getPhoneNumber();
                     }
                     if (!isGetName) {
                         if (infos.get(position).getType() == 2) {
@@ -156,7 +161,20 @@ public class AnalyseActivity extends Activity {
                         }
                     }
                 }
-                outputText += "\n" + "发出的短信为" + "条";
+                Collections.sort(uginfos);
+                int count = 1;
+                for (int i = 0; i < uginfos.size(); i++) {
+                    UGSmsInfo ug = uginfos.get(i);
+
+                    if (ug.getNameString() != null) {
+                        outputText += (count++) + ": " + ug.getNameString()
+                                + " " + ug.getSum() + "\n";
+                    }
+                    // ug.setthread_id(tmpNum);
+                    // uginfos.add(ug);
+                }
+
+                outputText += "\n" + "完成";
                 Message message2 = new Message();
                 message2.what = 2;
                 uiHandler.sendMessage(message2);
