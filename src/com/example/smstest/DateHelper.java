@@ -1,7 +1,9 @@
 package com.example.smstest;
 
+import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateHelper {
@@ -9,6 +11,34 @@ public class DateHelper {
     public static String today;
     public static String lastYearToday;
 
+    public static Date getIndexDay( Date origin,int index) {
+        Date dt=origin;
+        
+        Calendar rightNow = Calendar.getInstance();
+        rightNow.setTime(dt);
+      //  rightNow.add(Calendar.YEAR,-1);//日期减1年
+       // rightNow.add(Calendar.MONTH,3);//日期加3个月
+        rightNow.add(Calendar.DAY_OF_YEAR,index);//日期加10天
+        Date dt1=rightNow.getTime();
+       // String reStr = sdf.format(dt1);
+        //System.out.println(reStr);
+        return dt1;
+    }
+    public static String getStrFromDate(Date date){
+        Date curDate = date;
+        SimpleDateFormat sdf;
+        sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        today = sdf.format(curDate);
+        // today = sdf.format(1000);
+        return today;
+        
+    }
+    public static Date getDateToday() {
+        Date curDate = new Date();// 获取当前时间
+        
+        return curDate;
+    }
     public static String getToday() {
         Date curDate = new Date();// 获取当前时间
         SimpleDateFormat sdf;

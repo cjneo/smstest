@@ -3,8 +3,12 @@ package com.example.smstest;
 import android.content.Intent;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -12,6 +16,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,144 +27,270 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.support.v7.app.ActionBarActivity;  
+import android.text.method.ScrollingMovementMethod;
 
-public class MainActivity extends Activity {
 
-    Button analyseButton;
-    TextView currentDateView;
-    private ListView listview;
-
+public class MainActivity extends  ActionBarActivity{
     private List<SmsInfo> infos;
-    private List<ContactInfo> contactInfos;
+    Uri uri;
+    TextView analyseText;
+    List<ContactInfo> contactInfos;
+     ProgressBar bar3;
+     String urlRankList;
+     ListView listview;
+     List<Map<String, Object>> listems;
+     Map<String, Object> listem ;
+     SimpleAdapter simplead;
+    Map<String, String> dateSms = new HashMap<String, String>();
+    Map<String, SmsNameNum> hashOfMonth = new HashMap<String, SmsNameNum>();
+    ContactContent contactContent;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    List<UGSmsInfo> uginfos = new ArrayList<UGSmsInfo>();
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        currentDateView = (TextView) this.findViewById(R.id.TextDate);
-        analyseButton = (Button) this.findViewById(R.id.analyse);
-        analyseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                Bundle b = new Bundle();
-                intent.putExtras(b);
-                intent.setClass(MainActivity.this, AnalyseActivity.class);
-                startActivityForResult(intent, 0);
-            }
-        });
-        String lastYearToday = DateHelper.getLastyearToday(DateHelper
-                .getToday());
-        currentDateView.setText(lastYearToday);
+    String outputText ="";
 
-        Uri uri = Uri.parse(AllFinalInfo.SMS_URI_ALL);
-        SmsContent sc = new SmsContent(this, uri);
+    Handler uiHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case 1:
+                
+                analyseText.setText(outputText);
+                break;
+            case 2:
+                analyseText.setText(outputText);
+                bar3.setVisibility(View.INVISIBLE);
+                
 
-  //      infos = sc.getPastSms();
-        
-        //infos = sc.getAllSms();
-        infos =  sc.getSmsByPerson();
-       // infos.sortByPhoneNum();
-        uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        ContactContent contactContent =new ContactContent(this,uri);
-        contactInfos = contactContent.getAllContact();
-        
-        listview = (ListView) this.findViewById(R.id.ListView_Sms);
-        listview.setAdapter(new SmsListAdapter(this));
-  
-    }
+                break;
+            case 3:
+                
+                for (int i = 0; i < uginfos.size(); i++) {
+                    UGSmsInfo ug = uginfos.get(i);
 
-    class SmsListAdapter extends BaseAdapter {
-        private LayoutInflater layoutinflater;
-        itemview myview;
-        Date date;
-        SimpleDateFormat sdf;
-
-        public final class itemview {
-            public TextView text;
-            public TextView textinfo;
-        };
-
-        public SmsListAdapter(Context c) {
-            layoutinflater = LayoutInflater.from(c);
-            this.date = new Date();
-            this.sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        }
-
-        public void setDate(Long date) {
-            this.date.setTime(date);
-        }
-
-        @Override
-        public int getCount() {
-            // TODO Auto-generated method stub
-            return infos.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = layoutinflater.inflate(R.layout.smsitem, null);
-                myview = new itemview();
-                myview.text = (TextView) convertView
-                        .findViewById(R.id.TextView_SmsBody);
-                myview.textinfo = (TextView) convertView
-                        .findViewById(R.id.TextView_SmsInfo);
-                convertView.setTag(myview);
-            } else {
-                myview = (itemview) convertView.getTag();
-
-            }
-            myview.text.setText(infos.get(position).getSmsbody());
-            this.setDate(infos.get(position).getDate());
-            String dateStr = this.sdf.format(date);
-
-            String personid = infos.get(position).getperson();
-            String phoneNumber=infos.get(position).getPhoneNumber();
-            ContentResolver cr = getContentResolver();
-            String selection=null;
-             selection = ContactsContract.CommonDataKinds.Phone.DATA1+"="+phoneNumber;
-            Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI; // 联系人Uri；  
-            // 查询的字段  
-            String name = "";
-            String id="null";
-            String phoneNum="";
-            int i=0;
-            for(;i<contactInfos.size();i++){
-                if(contactInfos.get(i).getPhoneNum().equals(phoneNumber))
-                  //  if(contactInfos.get(i).getPhoneNum()==new String("15600602714"))
-
-                {
-                    phoneNum=contactInfos.get(i).getPhoneNum();
-                    name=contactInfos.get(i).getDesplayName();
-                    break;
+                    if (ug.getNameString() != null) {
+                      //  outputText += (count++) + ": " + ug.getNameString()
+                        //        + " " + ug.getSum() + "\n";
+                        listem = new HashMap<String, Object>();
+                        listem.put("smsname", ug.getNameString());
+                        listem.put("smstime", " ");
+                        listem.put("smssum", ug.getSum()+" ");
+                        listems.add(listem);
+                        
+                    }
                 }
+                outputText += "\n"+"短信联系的"+listems.size()+"个";
+                if(uginfos.size()>0){
+                outputText += "\n"+"短信来往最多的是："+uginfos.get(0).getNameString();}
+                analyseText.setText(outputText);
+                
+                simplead.notifyDataSetChanged();
+                break;
             }
-            String tmpinfo = "id:"+id+"name:" + name + "phonenum"+phoneNum+"person"
-                    + infos.get(position).getperson() + " Date:" + dateStr
-                    + " PhoneNumber:" + infos.get(position).getPhoneNumber()
-                    + " Type:" + infos.get(position).getType() + " id:"
-                    + infos.get(position).getid() + " threadid:"
-                    + infos.get(position).getthread_id();
-
-            myview.textinfo.setText(tmpinfo);
-
-            return convertView;
+            super.handleMessage(msg);
         }
+    };
 
+    protected void onCreate(Bundle saveInstanceState) {
+        super.onCreate(saveInstanceState);
+        setContentView(R.layout.analyse);
+        bar3 = (ProgressBar) findViewById(R.id.bar3);
+        bar3.setVisibility(View.VISIBLE);
+        analyseText = (TextView) findViewById(R.id.analyseText);
+        uri = Uri.parse(AllFinalInfo.SMS_URI_ALL);
+        analyseText.setMovementMethod(ScrollingMovementMethod.getInstance());
+
+        listview = (ListView) findViewById(R.id.ranklistview);
+         listems=new ArrayList<Map<String, Object>>();
+
+
+        SmsContent sc = new SmsContent(this, uri);
+        // infos = sc.getAllSms();
+        infos = sc.getSmsByPerson();
+
+        uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        contactContent = new ContactContent(this, uri);
+        contactInfos = contactContent.getAllContact();
+
+        outputText +=  "您一共有短信"+infos.size()+"条"+"\n"+
+                "联系人"+contactInfos.size()+"个";
+        
+        simplead = new SimpleAdapter(this, listems,
+                R.layout.listitem, new String[] { "smsname", "smstime","smssum" },
+                new int[] { R.id.smsname, R.id.smstime,R.id.smssum });
+        
+        listview.setAdapter(simplead);
+
+        // this function count the number of sms of each month
+        /*
+         * new Thread() { public void run() { int intPersonValid = 0; int
+         * intReceive = 0; int intSend = 0; if (infos.size() <= 0) return; long
+         * longDate = infos.get(0).getDate(); DateHelper dateHelper = new
+         * DateHelper(); int smsNum = 0; String stringDate =
+         * dateHelper.getStringOfLong(longDate); stringDate =
+         * dateHelper.getThisMonth(stringDate); longDate =
+         * dateHelper.getLongOfString(stringDate); outputText += "\n" +
+         * stringDate;
+         * 
+         * for (int i = 0; i < infos.size(); i++) { int position = i; String
+         * personid = infos.get(position).getperson(); long date =
+         * infos.get(position).getDate();
+         * 
+         * while (date < longDate) { if (smsNum > 0) { dateSms.put(stringDate,
+         * smsNum + ""); outputText += stringDate + ":" + smsNum + " "; } smsNum
+         * = 0; stringDate = dateHelper.getLastMonth(stringDate); longDate =
+         * dateHelper.getLongOfString(stringDate); }
+         * 
+         * smsNum++;
+         * 
+         * if (personid != null) { intPersonValid++; }
+         * 
+         * int type = infos.get(position).getType(); // String typeone="1"; //
+         * String typetwo="2"; if (type == 1) { intReceive++; } else if (type ==
+         * 2) { intSend++; }
+         * 
+         * }
+         * 
+         * outputText += "\n" + "其中you名字的短信有" + intPersonValid + "条"; outputText
+         * += "\n" + "收到的短信为" + intReceive + "条"; outputText += "\n" + "发出的短信为"
+         * + intSend + "条";
+         * 
+         * Message message2 = new Message(); message2.what = 2;
+         * uiHandler.sendMessage(message2);
+         * 
+         * } } // .start() ;
+         */
+        new Thread() {
+            public void run() {
+                String ugUserNum = infos.get(0).getthread_id();
+                String ugUserPerson = infos.get(0).getperson();
+                String ugUserPhoneNum = null;
+                String ugUserName = null;
+                int sum = 0;
+                boolean isGetName = false;
+                int tryGetNameTime = 0;
+               
+                for (int i = 0; i < infos.size(); i++) {
+                    int position = i;
+                    String tmpNum = infos.get(position).getthread_id();
+
+                    if (tmpNum.equals(ugUserNum)) {
+                        sum++;
+                    } else if (!(tmpNum.equals(ugUserNum))) {
+
+                        if (sum > 0) {
+
+                             //outputText += tmpNum+":"+ugUserPhoneNum + ":" +
+                             //sum + " |"
+                            // + ugUserName + " \n";
+                            UGSmsInfo ug = new UGSmsInfo();
+                            ug.setSum(sum);
+                            ug.setNameString(ugUserName);
+                            ug.setthread_id(tmpNum);
+                            uginfos.add(ug);
+                        }
+
+                        sum = 1;
+                        ugUserNum = tmpNum;
+                        ugUserPerson = null;
+                        isGetName = false;
+                        tryGetNameTime = 0;
+                        ugUserName = null;
+                        ugUserPhoneNum = infos.get(position).getPhoneNumber();
+                    }
+                    if (!isGetName) {
+                        if (infos.get(position).getType() == 2) {
+                            if (tryGetNameTime < 3) {
+                                ugUserPhoneNum = infos.get(position)
+                                        .getPhoneNumber();
+                                tryGetNameTime++;
+                                ugUserName = contactContent
+                                        .findNameByPhoneNum(ugUserPhoneNum);
+                                if (ugUserName != null) {
+                                    isGetName = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                Collections.sort(uginfos);
+                int count = 1;
+                for (int i = 0; i < uginfos.size(); i++) {
+                    UGSmsInfo ug = uginfos.get(i);
+
+                    if (ug.getNameString() != null) {
+                   //     outputText += (count++) + ": " + ug.getNameString()
+                     //           + " " + ug.getSum() + "\n";
+                    }
+                }
+
+                
+                Message message2 = new Message();
+                message2.what = 2;
+                uiHandler.sendMessage(message2);
+
+                Message message3 = new Message();
+                message3.what = 3;
+                uiHandler.sendMessage(message3);
+            }
+        }.start();
     }
+    @Override  
+    public boolean onCreateOptionsMenu(Menu menu) {  
+        //加载action items  
+        getMenuInflater().inflate(R.menu.main, menu);  
+        return true;  
+    }
+    @Override  
+    public boolean onOptionsItemSelected(MenuItem item) {  
+     switch(item.getItemId()){  
+     case R.id.action_analyse:  
+         Intent intent = new Intent();
+         Bundle b = new Bundle();
+         intent.putExtras(b);
+         intent.setClass(MainActivity.this, AnalyseActivity.class);
+         startActivityForResult(intent, 0);
+      break;  
+     }  
+     return true;  
+    } 
+    /*
+     * public void tryContactInfo() { uri =
+     * ContactsContract.Contacts.CONTENT_URI; uri =
+     * ContactsContract.CommonDataKinds.Phone.CONTENT_URI; ContactContent
+     * contactContent = new ContactContent(this, uri); contactInfos =
+     * contactContent.getAllContact(); getContact(); new Thread() { public void
+     * run() { for (int i = 0; i < contactInfos.size(); i++) { ContactInfo info
+     * = contactInfos.get(i); outputText += info.getContactId() + " " +
+     * info.getDesplayName();
+     * 
+     * } Message message2 = new Message(); message2.what = 2;
+     * uiHandler.sendMessage(message2); }
+     * 
+     * }.start(); }
+     * 
+     * public void getContact() { // 获得所有的联系人 Cursor cur =
+     * getContentResolver().query( ContactsContract.Contacts.CONTENT_URI, null,
+     * null, null, null); // 循环遍历 if (cur.moveToFirst()) { int idColumn =
+     * cur.getColumnIndex(ContactsContract.Contacts._ID); int displayNameColumn
+     * = cur .getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME); do { //
+     * 获得联系人的ID号 String contactId = cur.getString(idColumn); // 获得联系人姓名 String
+     * disPlayName = cur.getString(displayNameColumn);
+     * outputText+=contactId+" "+disPlayName; // 查看该联系人有多少个电话号码。如果没有这返回值为0 int
+     * phoneCount = cur .getInt(cur
+     * .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)); if
+     * (phoneCount > 0) { // 获得联系人的电话号码 Cursor phones =
+     * getContentResolver().query(
+     * ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+     * ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId,
+     * null, null); if (phones.moveToFirst()) { do { // 遍历所有的电话号码 String
+     * phoneNumber = phones .getString(phones
+     * .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+     * System.out.println(phoneNumber); } while (phones.moveToNext()); } } }
+     * while (cur.moveToNext()); } Message message2 = new Message();
+     * message2.what = 2; uiHandler.sendMessage(message2); }
+     */
 }
