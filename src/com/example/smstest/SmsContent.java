@@ -61,7 +61,10 @@ public class SmsContent {
         Cursor cursor = getPastSmsCursor();
         return getSmsInfo(cursor);
     }
-
+    public List<SmsInfo> getIndexSms(int forward,int backward) {
+        Cursor cursor = getIndexSmsCursor(forward,backward);
+        return getSmsInfo(cursor);
+    }
     public List<SmsInfo> getAllSms() {
         Cursor cursor = getAllSmsCursor();
         getSmsInfo(cursor);
@@ -101,7 +104,39 @@ public class SmsContent {
 
         return infos;
     }
+    public Cursor getIndexSmsCursor(int forward,int backward) {
+        String[] projection = new String[] { "_id", "thread_id", "address",
+                "person", "body", "date", "type" };
 
+        Cursor cusor = null;
+        List<String> dateSelection = new ArrayList<String>();
+        
+        String lastYearToday = DateHelper.getStrFromDate(DateHelper
+                .getIndexDay(DateHelper.getDateToday(), 3));
+        Date lastyear=DateHelper.getIndexYear( DateHelper.getDateToday(),-1);
+        Date lastyeardate1=DateHelper
+                .getIndexDay(lastyear,forward);
+        Date lastyeardate2=DateHelper
+                .getIndexDay(lastyear,-backward);
+            Date strtodate = lastyeardate1;
+
+            long dateLong = strtodate.getTime();
+            
+
+            Date strtodate2 = lastyeardate2;
+            long dateLong2 = strtodate2.getTime();
+            String selection = "(( date" + " > " + Long.toString(dateLong2)
+                    + ") AND ( date < " + Long.toString(dateLong) + "))";
+            dateSelection.add(selection);
+        
+      //  String selection = "(" + dateSelection.get(0) + "OR"
+        //        + dateSelection.get(1) + "OR" + dateSelection.get(2) + ")";
+        ContentResolver cr = activity.getContentResolver();
+        cusor = cr.query(uri, projection, selection, null, "date desc");
+
+        return cusor;
+
+    }
     public Cursor getPastSmsCursor() {
         String[] projection = new String[] { "_id", "thread_id", "address",
                 "person", "body", "date", "type" };

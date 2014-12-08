@@ -24,6 +24,18 @@ public class DateHelper {
         //System.out.println(reStr);
         return dt1;
     }
+    public static Date getIndexYear( Date origin,int index) {
+        Date dt=origin;
+        
+        Calendar rightNow = Calendar.getInstance();
+        rightNow.setTime(dt);
+        rightNow.add(Calendar.YEAR,index);//日期减1年
+       // rightNow.add(Calendar.MONTH,3);//日期加3个月
+        Date dt1=rightNow.getTime();
+       // String reStr = sdf.format(dt1);
+        //System.out.println(reStr);
+        return dt1;
+    }
     public static String getStrFromDate(Date date){
         Date curDate = date;
         SimpleDateFormat sdf;

@@ -70,12 +70,12 @@ public class MainActivity extends  ActionBarActivity{
                 
                 for (int i = 0; i < uginfos.size(); i++) {
                     UGSmsInfo ug = uginfos.get(i);
-
+                    int j=i+1;
                     if (ug.getNameString() != null) {
                       //  outputText += (count++) + ": " + ug.getNameString()
                         //        + " " + ug.getSum() + "\n";
                         listem = new HashMap<String, Object>();
-                        listem.put("smsname", ug.getNameString());
+                        listem.put("smsname", ""+j+" "+ug.getNameString());
                         listem.put("smstime", " ");
                         listem.put("smssum", ug.getSum()+" ");
                         listems.add(listem);

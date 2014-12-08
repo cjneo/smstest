@@ -1,20 +1,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/MyListItem"
+    android:id="@+id/MyListItem_other"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="10dip"
-    android:paddingLeft="70dip"
-    android:paddingRight="8dip"
+    android:paddingRight="70dip"
+    android:paddingLeft="8dip"
     android:paddingTop="10dip" >
 
     <RelativeLayout
-        android:id="@+id/ReMyListItem"
+        android:id="@+id/ReMyListItem_other"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_edittext" >
+        android:background="@drawable/rounded_edittext_other" >
 
         <TextView
-            android:id="@+id/TextView_SmsNum"
+            android:id="@+id/TextView_SmsNum_other"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dip"
@@ -22,20 +22,20 @@
             android:paddingLeft="3dip"
             android:textSize="12sp" />
         <TextView
-            android:id="@+id/TextView_SmsBody"
+            android:id="@+id/TextView_SmsBody_other"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/TextView_SmsNum"
+            android:layout_below="@id/TextView_SmsNum_other"
             android:layout_marginLeft="3dip"
             android:paddingTop="3dip"
             android:paddingLeft="3dip"
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/TextView_SmsInfo"
+            android:id="@+id/TextView_SmsInfo_other"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/TextView_SmsBody"
+            android:layout_below="@id/TextView_SmsBody_other"
             android:layout_marginLeft="3dip"
             android:paddingLeft="3dip"
             android:textSize="12dp" />

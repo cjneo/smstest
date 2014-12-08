@@ -1080,14 +1080,23 @@ containing a value of this type.
         public static final int actionbar=0x7f020057;
         public static final int contact=0x7f020058;
         public static final int ic_launcher=0x7f020059;
+        public static final int rounded_edittext=0x7f02005a;
+        public static final int rounded_edittext_other=0x7f02005b;
     }
     public static final class id {
         public static final int ListView_Sms=0x7f05003e;
         public static final int MyListItem=0x7f050043;
+        public static final int MyListItem_other=0x7f05004b;
+        public static final int ReMyListItem=0x7f050047;
+        public static final int ReMyListItem_other=0x7f05004c;
         public static final int TextDate=0x7f05003d;
-        public static final int TextView_SmsBody=0x7f050047;
-        public static final int TextView_SmsInfo=0x7f050048;
-        public static final int action_analyse=0x7f050049;
+        public static final int TextView_SmsBody=0x7f050049;
+        public static final int TextView_SmsBody_other=0x7f05004e;
+        public static final int TextView_SmsInfo=0x7f05004a;
+        public static final int TextView_SmsInfo_other=0x7f05004f;
+        public static final int TextView_SmsNum=0x7f050048;
+        public static final int TextView_SmsNum_other=0x7f05004d;
+        public static final int action_analyse=0x7f050050;
         public static final int action_bar=0x7f05001c;
         public static final int action_bar_activity_content=0x7f050015;
         public static final int action_bar_container=0x7f05001b;
@@ -1211,7 +1220,8 @@ containing a value of this type.
         public static final int analyse=0x7f030019;
         public static final int listitem=0x7f03001a;
         public static final int smsitem=0x7f03001b;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001c;
+        public static final int smsitem_other=0x7f03001c;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001d;
     }
     public static final class menu {
         public static final int analyse=0x7f0c0000;
@@ -1258,8 +1268,10 @@ containing a value of this type.
         /**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f0a000b;
+        public static final int analyse_name=0x7f0a000f;
         public static final int app_name=0x7f0a000d;
-        public static final int hello_world=0x7f0a000e;
+        public static final int hello_world=0x7f0a0010;
+        public static final int main_name=0x7f0a000e;
     }
     public static final class style {
         /** 
