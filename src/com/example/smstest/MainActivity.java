@@ -30,63 +30,70 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.support.v7.app.ActionBarActivity;  
+import android.support.v7.app.ActionBarActivity;
 import android.text.method.ScrollingMovementMethod;
 
-
-public class MainActivity extends  ActionBarActivity{
+public class MainActivity extends ActionBarActivity {
     private List<SmsInfo> infos;
     Uri uri;
     TextView analyseText;
     List<ContactInfo> contactInfos;
-     ProgressBar bar3;
-     String urlRankList;
-     ListView listview;
-     List<Map<String, Object>> listems;
-     Map<String, Object> listem ;
-     SimpleAdapter simplead;
+    ProgressBar bar3;
+    String urlRankList;
+    ListView listview;
+    List<Map<String, Object>> listems;
+    Map<String, Object> listem;
+    SimpleAdapter simplead;
     Map<String, String> dateSms = new HashMap<String, String>();
     Map<String, SmsNameNum> hashOfMonth = new HashMap<String, SmsNameNum>();
     ContactContent contactContent;
 
     List<UGSmsInfo> uginfos = new ArrayList<UGSmsInfo>();
 
-    String outputText ="";
+    String outputText = "";
 
     Handler uiHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case 1:
-                
+
                 analyseText.setText(outputText);
                 break;
             case 2:
                 analyseText.setText(outputText);
                 bar3.setVisibility(View.INVISIBLE);
-                
 
                 break;
             case 3:
-                
+
+                int count = 1;
+                String namefirst="";
+
                 for (int i = 0; i < uginfos.size(); i++) {
                     UGSmsInfo ug = uginfos.get(i);
-                    int j=i+1;
+                    // int j=i+1;
                     if (ug.getNameString() != null) {
-                      //  outputText += (count++) + ": " + ug.getNameString()
-                        //        + " " + ug.getSum() + "\n";
+                        // outputText += (count++) + ": " + ug.getNameString()
+                        // + " " + ug.getSum() + "\n";
                         listem = new HashMap<String, Object>();
-                        listem.put("smsname", ""+j+" "+ug.getNameString());
+                        if(count==1)
+                            namefirst=ug.getNameString();
+                        listem.put("smsname",
+                                "" + count + " " + ug.getNameString());
                         listem.put("smstime", " ");
-                        listem.put("smssum", ug.getSum()+" ");
+                        listem.put("smssum", ug.getSum() + " ");
                         listems.add(listem);
-                        
+                        count++;
+
                     }
                 }
-                outputText += "\n"+"短信联系的"+listems.size()+"个";
-                if(uginfos.size()>0){
-                outputText += "\n"+"短信来往最多的是："+uginfos.get(0).getNameString();}
+                outputText += "\n" + "短信联系的" + listems.size() + "个";
+                if (uginfos.size() > 0) {
+                    outputText += "\n" + "短信来往最多的是："
+                            + namefirst;
+                }
                 analyseText.setText(outputText);
-                
+
                 simplead.notifyDataSetChanged();
                 break;
             }
@@ -104,8 +111,7 @@ public class MainActivity extends  ActionBarActivity{
         analyseText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         listview = (ListView) findViewById(R.id.ranklistview);
-         listems=new ArrayList<Map<String, Object>>();
-
+        listems = new ArrayList<Map<String, Object>>();
 
         SmsContent sc = new SmsContent(this, uri);
         // infos = sc.getAllSms();
@@ -114,14 +120,19 @@ public class MainActivity extends  ActionBarActivity{
         uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         contactContent = new ContactContent(this, uri);
         contactInfos = contactContent.getAllContact();
+        
+        if(infos==null||contactInfos==null){
+            outputText+="没有您的权限允许，可不能正常运行哦";
+            analyseText.setText(outputText);
+            return;
+        }
+        outputText += "您一共有短信" + infos.size() + "条" + "\n" + "联系人"
+                + contactInfos.size() + "个";
 
-        outputText +=  "您一共有短信"+infos.size()+"条"+"\n"+
-                "联系人"+contactInfos.size()+"个";
-        
-        simplead = new SimpleAdapter(this, listems,
-                R.layout.listitem, new String[] { "smsname", "smstime","smssum" },
-                new int[] { R.id.smsname, R.id.smstime,R.id.smssum });
-        
+        simplead = new SimpleAdapter(this, listems, R.layout.listitem,
+                new String[] { "smsname", "smstime", "smssum" }, new int[] {
+                        R.id.smsname, R.id.smstime, R.id.smssum });
+
         listview.setAdapter(simplead);
 
         // this function count the number of sms of each month
@@ -172,7 +183,7 @@ public class MainActivity extends  ActionBarActivity{
                 int sum = 0;
                 boolean isGetName = false;
                 int tryGetNameTime = 0;
-               
+
                 for (int i = 0; i < infos.size(); i++) {
                     int position = i;
                     String tmpNum = infos.get(position).getthread_id();
@@ -183,8 +194,8 @@ public class MainActivity extends  ActionBarActivity{
 
                         if (sum > 0) {
 
-                             //outputText += tmpNum+":"+ugUserPhoneNum + ":" +
-                             //sum + " |"
+                            // outputText += tmpNum+":"+ugUserPhoneNum + ":" +
+                            // sum + " |"
                             // + ugUserName + " \n";
                             UGSmsInfo ug = new UGSmsInfo();
                             ug.setSum(sum);
@@ -222,12 +233,11 @@ public class MainActivity extends  ActionBarActivity{
                     UGSmsInfo ug = uginfos.get(i);
 
                     if (ug.getNameString() != null) {
-                   //     outputText += (count++) + ": " + ug.getNameString()
-                     //           + " " + ug.getSum() + "\n";
+                        // outputText += (count++) + ": " + ug.getNameString()
+                        // + " " + ug.getSum() + "\n";
                     }
                 }
 
-                
                 Message message2 = new Message();
                 message2.what = 2;
                 uiHandler.sendMessage(message2);
@@ -238,25 +248,27 @@ public class MainActivity extends  ActionBarActivity{
             }
         }.start();
     }
-    @Override  
-    public boolean onCreateOptionsMenu(Menu menu) {  
-        //加载action items  
-        getMenuInflater().inflate(R.menu.main, menu);  
-        return true;  
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // 加载action items
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
-    @Override  
-    public boolean onOptionsItemSelected(MenuItem item) {  
-     switch(item.getItemId()){  
-     case R.id.action_analyse:  
-         Intent intent = new Intent();
-         Bundle b = new Bundle();
-         intent.putExtras(b);
-         intent.setClass(MainActivity.this, AnalyseActivity.class);
-         startActivityForResult(intent, 0);
-      break;  
-     }  
-     return true;  
-    } 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.action_analyse:
+            Intent intent = new Intent();
+            Bundle b = new Bundle();
+            intent.putExtras(b);
+            intent.setClass(MainActivity.this, AnalyseActivity.class);
+            startActivityForResult(intent, 0);
+            break;
+        }
+        return true;
+    }
     /*
      * public void tryContactInfo() { uri =
      * ContactsContract.Contacts.CONTENT_URI; uri =

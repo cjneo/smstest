@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">短信看看</string>
-    <string name="main_name">重要的人</string>
+    <string name="main_name">短信看看</string>
     <string name="analyse_name">去年今日</string>
     <string name="hello_world">Hello world!</string>
 

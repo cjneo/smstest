@@ -39,6 +39,7 @@
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/analyse_name"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
     </application>

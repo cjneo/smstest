@@ -4,10 +4,6 @@
     tools:context="com.example.smstest.MainActivity" >
     
     
-     <item  
-        android:id="@+id/action_analyse"  
-        android:icon="@drawable/contact"
-        Tab:showAsAction="always"
-        android:title="更多"/>
+    
 
 </menu>

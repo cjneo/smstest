@@ -74,6 +74,9 @@ public class AnalyseActivity extends ActionBarActivity {
         // infos = sc.getAllSms();
         // infos = sc.getSmsByPerson();
         // infos.sortByPhoneNum();
+        if(infos==null){
+            return;
+        }
         uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         ContactContent contactContent = new ContactContent(this, uri);
         contactInfos = contactContent.getAllContact();
@@ -206,7 +209,7 @@ public class AnalyseActivity extends ActionBarActivity {
                 }
 
                 myview.text.setText(infos.get(position).getSmsbody());
-                myview.textinfo.setText(type+"接收日期："+dateStr);
+                myview.textinfo.setText("接收日期："+dateStr);
             }
             else{
                 
@@ -219,7 +222,7 @@ public class AnalyseActivity extends ActionBarActivity {
                 
 
                 myview.text.setText(infos.get(position).getSmsbody());
-                myview.textinfo.setText(type+"发送日期："+dateStr);
+                myview.textinfo.setText("发送日期："+dateStr);
             }
             return convertView;
         }
