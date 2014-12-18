@@ -24,6 +24,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -82,6 +84,7 @@ public class MainActivity extends ActionBarActivity {
                                 "" + count + " " + ug.getNameString());
                         listem.put("smstime", " ");
                         listem.put("smssum", ug.getSum() + " ");
+                        listem.put("smsnum",ug.getthread_id());
                         listems.add(listem);
                         count++;
 
@@ -134,46 +137,28 @@ public class MainActivity extends ActionBarActivity {
                         R.id.smsname, R.id.smstime, R.id.smssum });
 
         listview.setAdapter(simplead);
+        listview.setOnItemClickListener(new OnItemClickListener(){
 
-        // this function count the number of sms of each month
-        /*
-         * new Thread() { public void run() { int intPersonValid = 0; int
-         * intReceive = 0; int intSend = 0; if (infos.size() <= 0) return; long
-         * longDate = infos.get(0).getDate(); DateHelper dateHelper = new
-         * DateHelper(); int smsNum = 0; String stringDate =
-         * dateHelper.getStringOfLong(longDate); stringDate =
-         * dateHelper.getThisMonth(stringDate); longDate =
-         * dateHelper.getLongOfString(stringDate); outputText += "\n" +
-         * stringDate;
-         * 
-         * for (int i = 0; i < infos.size(); i++) { int position = i; String
-         * personid = infos.get(position).getperson(); long date =
-         * infos.get(position).getDate();
-         * 
-         * while (date < longDate) { if (smsNum > 0) { dateSms.put(stringDate,
-         * smsNum + ""); outputText += stringDate + ":" + smsNum + " "; } smsNum
-         * = 0; stringDate = dateHelper.getLastMonth(stringDate); longDate =
-         * dateHelper.getLongOfString(stringDate); }
-         * 
-         * smsNum++;
-         * 
-         * if (personid != null) { intPersonValid++; }
-         * 
-         * int type = infos.get(position).getType(); // String typeone="1"; //
-         * String typetwo="2"; if (type == 1) { intReceive++; } else if (type ==
-         * 2) { intSend++; }
-         * 
-         * }
-         * 
-         * outputText += "\n" + "其中you名字的短信有" + intPersonValid + "条"; outputText
-         * += "\n" + "收到的短信为" + intReceive + "条"; outputText += "\n" + "发出的短信为"
-         * + intSend + "条";
-         * 
-         * Message message2 = new Message(); message2.what = 2;
-         * uiHandler.sendMessage(message2);
-         * 
-         * } } // .start() ;
-         */
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id) {
+                // TODO Auto-generated method stub
+               // int smsnum=(Integer) listems.get(position).get(new String("smsnum"));
+                int smsnum=1;
+                String ii;
+                ii= (String) listems.get(position).get("smsnum");
+                smsnum=Integer.valueOf(ii).intValue();
+                Intent intent = new Intent();
+                Bundle b = new Bundle();
+                b.putInt("smsnum",smsnum);
+                intent.putExtras(b);
+                intent.setClass(MainActivity.this, SmsMsgActivity.class);
+              //  intent.setClass(MainActivity.this, AnalyseActivity.class);
+                startActivityForResult(intent, 0);
+            }
+            
+        });
+   
         new Thread() {
             public void run() {
                 String ugUserNum = infos.get(0).getthread_id();
@@ -200,7 +185,7 @@ public class MainActivity extends ActionBarActivity {
                             UGSmsInfo ug = new UGSmsInfo();
                             ug.setSum(sum);
                             ug.setNameString(ugUserName);
-                            ug.setthread_id(tmpNum);
+                            ug.setthread_id(ugUserNum);
                             uginfos.add(ug);
                         }
 
@@ -305,4 +290,49 @@ public class MainActivity extends ActionBarActivity {
      * while (cur.moveToNext()); } Message message2 = new Message();
      * message2.what = 2; uiHandler.sendMessage(message2); }
      */
+    
+    // this function count the number of sms of each month
+    /*
+     * new Thread() { public void run() { int intPersonValid = 0; int
+     * intReceive = 0; int intSend = 0; if (infos.size() <= 0) return; long
+     * longDate = infos.get(0).getDate(); DateHelper dateHelper = new
+     * DateHelper(); int smsNum = 0; String stringDate =
+     * dateHelper.getStringOfLong(longDate); stringDate =
+     * dateHelper.getThisMonth(stringDate); longDate =
+     * dateHelper.getLongOfString(stringDate); outputText += "\n" +
+     * stringDate;
+     * 
+     * for (int i = 0; i < infos.size(); i++) { int position = i; String
+     * personid = infos.get(position).getperson(); long date =
+     * infos.get(position).getDate();
+     * 
+     * while (date < longDate) { if (smsNum > 0) { dateSms.put(stringDate,
+     * smsNum + ""); outputText += stringDate + ":" + smsNum + " "; } smsNum
+     * = 0; stringDate = dateHelper.getLastMonth(stringDate); longDate =
+     * dateHelper.getLongOfString(stringDate); }
+     * 
+     * smsNum++;
+     * 
+     * if (personid != null) { intPersonValid++; }
+     * 
+     * int type = infos.get(position).getType(); // String typeone="1"; //
+     * String typetwo="2"; if (type == 1) { intReceive++; } else if (type ==
+     * 2) { intSend++; }
+     * 
+     * }
+     * 
+     * outputText += "\n" + "其中you名字的短信有" + intPersonValid + "条"; outputText
+     * += "\n" + "收到的短信为" + intReceive + "条"; outputText += "\n" + "发出的短信为"
+     * + intSend + "条";
+     * 
+     * Message message2 = new Message(); message2.what = 2;
+     * uiHandler.sendMessage(message2);
+     * 
+     * } } // .start() ;
+     */
+    @Override    
+    protected void onDestroy() {    
+        super.onDestroy();    
+         //写自己的代码，一定要在super.onDestory()下面写  
+    }  
 }

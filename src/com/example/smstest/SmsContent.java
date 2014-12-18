@@ -65,6 +65,10 @@ public class SmsContent {
         Cursor cursor = getIndexSmsCursor(forward,backward);
         return getSmsInfo(cursor);
     }
+    public List<SmsInfo> getSmsByThread_id(int id) {
+        Cursor cursor = getCursorByid(id);
+        return getSmsInfo(cursor);
+    }
     public List<SmsInfo> getAllSms() {
         Cursor cursor = getAllSmsCursor();
         getSmsInfo(cursor);
@@ -74,7 +78,8 @@ public class SmsContent {
 
     @SuppressWarnings("deprecation")
     public List<SmsInfo> getSmsInfo(Cursor cusor) {
-
+        if(cusor==null)
+            return null;
         int _idColumn = cusor.getColumnIndex("_id");
         int thread_idColumn = cusor.getColumnIndex("thread_id");
         int personColumn = cusor.getColumnIndex("person");
@@ -104,6 +109,20 @@ public class SmsContent {
 
         return infos;
     }
+    public Cursor getCursorByid(int id){
+        String[] projection = new String[] { "_id", "thread_id", "address",
+                "person", "body", "date", "type" };
+
+        Cursor cusor = null;
+        List<String> dateSelection = new ArrayList<String>();
+            String selection = "( thread_id" + " = " + id +")";
+            dateSelection.add(selection);
+        ContentResolver cr = activity.getContentResolver();
+        cusor = cr.query(uri, projection, selection, null, "date desc");
+
+        return cusor;
+        
+    }
     public Cursor getIndexSmsCursor(int forward,int backward) {
         String[] projection = new String[] { "_id", "thread_id", "address",
                 "person", "body", "date", "type" };
@@ -121,16 +140,11 @@ public class SmsContent {
             Date strtodate = lastyeardate1;
 
             long dateLong = strtodate.getTime();
-            
-
             Date strtodate2 = lastyeardate2;
             long dateLong2 = strtodate2.getTime();
             String selection = "(( date" + " > " + Long.toString(dateLong2)
                     + ") AND ( date < " + Long.toString(dateLong) + "))";
             dateSelection.add(selection);
-        
-      //  String selection = "(" + dateSelection.get(0) + "OR"
-        //        + dateSelection.get(1) + "OR" + dateSelection.get(2) + ")";
         ContentResolver cr = activity.getContentResolver();
         cusor = cr.query(uri, projection, selection, null, "date desc");
 
