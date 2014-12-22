@@ -1088,18 +1088,18 @@ containing a value of this type.
     }
     public static final class id {
         public static final int ListView_Sms=0x7f05003e;
-        public static final int MyListItem=0x7f050043;
-        public static final int MyListItem_other=0x7f05004b;
-        public static final int ReMyListItem=0x7f050047;
-        public static final int ReMyListItem_other=0x7f05004c;
+        public static final int MyListItem=0x7f050044;
+        public static final int MyListItem_other=0x7f05004c;
+        public static final int ReMyListItem=0x7f050048;
+        public static final int ReMyListItem_other=0x7f05004d;
         public static final int TextDate=0x7f05003d;
-        public static final int TextView_SmsBody=0x7f050049;
-        public static final int TextView_SmsBody_other=0x7f05004e;
-        public static final int TextView_SmsInfo=0x7f05004a;
-        public static final int TextView_SmsInfo_other=0x7f05004f;
-        public static final int TextView_SmsNum=0x7f050048;
-        public static final int TextView_SmsNum_other=0x7f05004d;
-        public static final int action_analyse=0x7f050050;
+        public static final int TextView_SmsBody=0x7f05004a;
+        public static final int TextView_SmsBody_other=0x7f05004f;
+        public static final int TextView_SmsInfo=0x7f05004b;
+        public static final int TextView_SmsInfo_other=0x7f050050;
+        public static final int TextView_SmsNum=0x7f050049;
+        public static final int TextView_SmsNum_other=0x7f05004e;
+        public static final int action_analyse=0x7f050053;
         public static final int action_bar=0x7f05001c;
         public static final int action_bar_activity_content=0x7f050015;
         public static final int action_bar_container=0x7f05001b;
@@ -1139,6 +1139,7 @@ containing a value of this type.
         public static final int never=0x7f050009;
         public static final int none=0x7f050010;
         public static final int normal=0x7f050000;
+        public static final int pagertitle=0x7f050052;
         public static final int progress_circular=0x7f050018;
         public static final int progress_horizontal=0x7f050019;
         public static final int radio=0x7f05002f;
@@ -1157,16 +1158,18 @@ containing a value of this type.
         public static final int showCustom=0x7f050007;
         public static final int showHome=0x7f050004;
         public static final int showTitle=0x7f050006;
-        public static final int smsname=0x7f050044;
-        public static final int smssum=0x7f050046;
-        public static final int smstime=0x7f050045;
+        public static final int smsname=0x7f050045;
+        public static final int smssum=0x7f050047;
+        public static final int smstime=0x7f050046;
         public static final int split_action_bar=0x7f05001e;
         public static final int submit_area=0x7f050039;
         public static final int tabMode=0x7f050002;
+        public static final int text_1=0x7f050043;
         public static final int title=0x7f05002b;
         public static final int top_action_bar=0x7f050020;
         public static final int up=0x7f050021;
         public static final int useLogo=0x7f050003;
+        public static final int viewpager=0x7f050051;
         public static final int withText=0x7f05000c;
     }
     public static final class integer {
@@ -1221,10 +1224,12 @@ containing a value of this type.
         public static final int abc_simple_decor=0x7f030017;
         public static final int activity_main=0x7f030018;
         public static final int analyse=0x7f030019;
-        public static final int listitem=0x7f03001a;
-        public static final int smsitem=0x7f03001b;
-        public static final int smsitem_other=0x7f03001c;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001d;
+        public static final int layout1=0x7f03001a;
+        public static final int listitem=0x7f03001b;
+        public static final int smsitem=0x7f03001c;
+        public static final int smsitem_other=0x7f03001d;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001e;
+        public static final int viewpager=0x7f03001f;
     }
     public static final class menu {
         public static final int analyse=0x7f0c0000;

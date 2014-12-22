@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.smskankan.R;
+import com.example.smskankan.MainActivity.myPagerAdapter;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -32,14 +33,22 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.PagerTitleStrip;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.ScrollingMovementMethod;
 
 public class MainActivity extends ActionBarActivity {
+    private ViewPager mViewPager;
+    private PagerTitleStrip mPagerTitleStrip;
+     ArrayList<String> titles;
+     ArrayList<View> views;
     private List<SmsInfo> infos;
     Uri uri;
     TextView analyseText;
@@ -110,14 +119,41 @@ public class MainActivity extends ActionBarActivity {
 
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
-        setContentView(R.layout.analyse);
-        bar3 = (ProgressBar) findViewById(R.id.bar3);
+        setContentView(R.layout.viewpager);
+        mViewPager = (ViewPager)findViewById(R.id.viewpager);
+        mPagerTitleStrip = (PagerTitleStrip)findViewById(R.id.pagertitle);
+         
+        //将要分页显示的View装入数组中
+        LayoutInflater mLi = LayoutInflater.from(this);
+        View view2 = mLi.inflate(R.layout.layout1, null);
+        View view1 = mLi.inflate(R.layout.analyse, null);
+     //   View view2 = mLi.inflate(R.layout.layout2, null);
+    //      View view3 = mLi.inflate(R.layout.layout3, null);
+     
+        //每个页面的Title数据
+         views = new ArrayList<View>();
+         views.add(view2);
+         views.add(view1);
+        
+      //  views.add(view3);
+         
+         titles = new ArrayList<String>();
+        titles.add("统计");
+        titles.add("联系人");
+       // titles.add("联系人" );
+      //  Button button = (Button) view1.findViewById(R.id.button_1);
+        
+        
+        mViewPager.setAdapter(new myPagerAdapter());
+
+        
+        bar3 = (ProgressBar) view1.findViewById(R.id.bar3);
         bar3.setVisibility(View.VISIBLE);
-        analyseText = (TextView) findViewById(R.id.analyseText);
+        analyseText = (TextView) view1.findViewById(R.id.analyseText);
         uri = Uri.parse(AllFinalInfo.SMS_URI_ALL);
         analyseText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
-        listview = (ListView) findViewById(R.id.ranklistview);
+        listview = (ListView) view1.findViewById(R.id.ranklistview);
         listview.setSelector(new ColorDrawable(Color.TRANSPARENT));
         listview.setCacheColorHint(0);
         listems = new ArrayList<Map<String, Object>>();
@@ -135,7 +171,10 @@ public class MainActivity extends ActionBarActivity {
             analyseText.setText(outputText);
             return;
         }
-        outputText += "您一共有短信" + infos.size() + "条" + "\n" + "联系人"
+        TextView msgText=(TextView) view2.findViewById(R.id.text_1);
+        String tmp ="您一共有短信" + infos.size() + "条" ;
+        msgText.setText(tmp);
+        outputText +=   "联系人"
                 + contactInfos.size() + "个";
 
         simplead = new SimpleAdapter(this, listems, R.layout.listitem,
@@ -336,6 +375,34 @@ public class MainActivity extends ActionBarActivity {
      * 
      * } } // .start() ;
      */
+    class myPagerAdapter extends PagerAdapter{
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            return arg0 == arg1;
+        }
+         
+        @Override
+        public int getCount() {
+            return views.size();
+        }
+
+        @Override
+        public void destroyItem(View container, int position, Object object) {
+            ((ViewPager)container).removeView(views.get(position));
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles.get(position);
+            //return "";
+        }
+
+        @Override
+        public Object instantiateItem(View container, int position) {
+            ((ViewPager)container).addView(views.get(position));
+            return views.get(position);
+        }
+    }
     @Override    
     protected void onDestroy() {    
         super.onDestroy();    
