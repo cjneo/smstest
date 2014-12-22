@@ -243,9 +243,12 @@ int drawable abc_textfield_searchview_right_holo_dark 0x7f020055
 int drawable abc_textfield_searchview_right_holo_light 0x7f020056
 int drawable action_analyse 0x7f020057
 int drawable actionbar 0x7f020058
-int drawable ic_launcher 0x7f020059
-int drawable rounded_edittext 0x7f02005a
-int drawable rounded_edittext_other 0x7f02005b
+int drawable bg_analyse 0x7f020059
+int drawable bg_main 0x7f02005a
+int drawable bg_smsmsg 0x7f02005b
+int drawable ic_launcher 0x7f02005c
+int drawable rounded_edittext 0x7f02005d
+int drawable rounded_edittext_other 0x7f02005e
 int id ListView_Sms 0x7f05003e
 int id MyListItem 0x7f050043
 int id MyListItem_other 0x7f05004b
