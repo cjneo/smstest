@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.smstest"
+    package="com.example.smskankan"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
          <activity
-            android:name="com.example.smstest.SmsMsgActivity"
+            android:name="com.example.smskankan.SmsMsgActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/main_name"
             android:screenOrientation="portrait"
@@ -43,7 +43,7 @@
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
         <activity
-            android:name="com.example.smstest.AnalyseActivity"
+            android:name="com.example.smskankan.AnalyseActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/analyse_name"
             android:screenOrientation="portrait"
