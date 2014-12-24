@@ -37,6 +37,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:divider="@color/clouds"
+                android:listSelector="@android:color/transparent"
+        
         android:dividerHeight="1px"
         android:fadingEdge="none" >
     </ListView>

@@ -148,7 +148,7 @@ public class MainActivity extends ActionBarActivity {
         bar3 = (ProgressBar) findViewById(R.id.bar3);
 
         bar3.setVisibility(View.VISIBLE);
-        analyseText = (TextView) findViewById(R.id.analyseText);
+        analyseText = (TextView) view1.findViewById(R.id.analyseText);
         uri = Uri.parse(AllFinalInfo.SMS_URI_ALL);
         analyseText.setMovementMethod(ScrollingMovementMethod.getInstance());
 

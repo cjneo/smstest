@@ -25,7 +25,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.smskankan.MainActivity"
             android:label="@string/main_name"
             android:theme="@style/Theme.AppCompat.Light" >
             <intent-filter>
